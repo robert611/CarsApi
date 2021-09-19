@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\CarBrandRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use ApiPlatform\Core\Annotation\ApiResource;
@@ -43,6 +45,16 @@ class CarBrand
      * @Assert\NotBlank()
      */
     private $founded;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Car::class, mappedBy="brand")
+     */
+    private $cars;
+
+    public function __construct()
+    {
+        $this->cars = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -93,6 +105,36 @@ class CarBrand
     public function setFounded(string $founded): self
     {
         $this->founded = $founded;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Car[]
+     */
+    public function getCars(): Collection
+    {
+        return $this->cars;
+    }
+
+    public function addCar(Car $car): self
+    {
+        if (!$this->cars->contains($car)) {
+            $this->cars[] = $car;
+            $car->setBrand($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCar(Car $car): self
+    {
+        if ($this->cars->removeElement($car)) {
+            // set the owning side to null (unless already changed)
+            if ($car->getBrand() === $this) {
+                $car->setBrand(null);
+            }
+        }
 
         return $this;
     }
