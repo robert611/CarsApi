@@ -63,6 +63,12 @@ class Car
      */
     private $carPictures;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=CarCategory::class, inversedBy="cars")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $category;
+
     public function __construct()
     {
         $this->carPictures = new ArrayCollection();
@@ -171,6 +177,18 @@ class Car
                 $carPicture->setCar(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getCategory(): ?CarCategory
+    {
+        return $this->category;
+    }
+
+    public function setCategory(?CarCategory $category): self
+    {
+        $this->category = $category;
 
         return $this;
     }
