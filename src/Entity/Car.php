@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\CarRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use ApiPlatform\Core\Annotation\ApiResource;
@@ -55,6 +57,16 @@ class Car
      * @ORM\JoinColumn(nullable=false)
      */
     private $brand;
+
+    /**
+     * @ORM\OneToMany(targetEntity=CarPicture::class, mappedBy="car")
+     */
+    private $carPictures;
+
+    public function __construct()
+    {
+        $this->carPictures = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -129,6 +141,36 @@ class Car
     public function setBrand(?CarBrand $brand): self
     {
         $this->brand = $brand;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|CarPicture[]
+     */
+    public function getCarPictures(): Collection
+    {
+        return $this->carPictures;
+    }
+
+    public function addCarPicture(CarPicture $carPicture): self
+    {
+        if (!$this->carPictures->contains($carPicture)) {
+            $this->carPictures[] = $carPicture;
+            $carPicture->setCar($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCarPicture(CarPicture $carPicture): self
+    {
+        if ($this->carPictures->removeElement($carPicture)) {
+            // set the owning side to null (unless already changed)
+            if ($carPicture->getCar() === $this) {
+                $carPicture->setCar(null);
+            }
+        }
 
         return $this;
     }
