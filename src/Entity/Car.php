@@ -44,12 +44,6 @@ class Car
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank()
      */
-    private $type;
-
-    /**
-     * @ORM\Column(type="string", length=255)
-     * @Assert\NotBlank()
-     */
     private $picture;
 
     /**
@@ -114,19 +108,7 @@ class Car
 
         return $this;
     }
-
-    public function getType(): ?string
-    {
-        return $this->type;
-    }
-
-    public function setType(string $type): self
-    {
-        $this->type = $type;
-
-        return $this;
-    }
-
+    
     public function getPicture(): ?string
     {
         return $this->picture;
